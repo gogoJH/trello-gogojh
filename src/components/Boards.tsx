@@ -33,8 +33,6 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
     const data = this.state.data;
     const boards = data.map(data => <Board key={data.id} data={data}></Board>);
 
-    console.log(getData("boards"));
-
     return (
       <Container>
         <Header />

@@ -1,28 +1,27 @@
 import React, { Component, MouseEvent, KeyboardEvent, ChangeEvent } from "react";
 import styled from "styled-components";
-import { CardData, addList, deleteList } from "../helper";
+import { CardData, addList, deleteList, getList } from "../helper";
 import { cardColor } from "../Styles";
 import Item from "./Item";
-import { Input } from "antd";
+import { Input, Button } from "antd";
 
 interface CardsProps {
   data: CardData;
+  allData: CardData[];
+  moveHandler: Function;
+  deleteHandler: Function;
 }
 
 interface CardsState {
-  id: number;
-  title: string;
-  list: [];
   toggle: boolean;
+  newList: [];
 }
 
 class Cards extends Component<CardsProps, CardsState> {
   constructor(props: CardsProps) {
     super(props);
     this.state = {
-      id: this.props.data.id,
-      title: this.props.data.title,
-      list: this.props.data.list,
+      newList: [],
       toggle: true
     };
   }
@@ -33,31 +32,53 @@ class Cards extends Component<CardsProps, CardsState> {
 
   enterHandler = async (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
-    const id = this.state.id;
+    const id = this.props.data.id;
 
-    const { data } = await addList(title, id);
+    await addList(title, id);
+    const { data } = await getList(id);
 
-    this.setState({ toggle: true, list: data });
+    this.setState({ toggle: true, newList: data });
   };
 
   deleteHandler = async (id: number) => {
-    const cardId = this.state.id;
-    const { data } = await deleteList(id, cardId);
+    const cardId = this.props.data.id;
+    await deleteList(id);
+    const { data } = await getList(cardId);
 
-    this.setState({ list: data });
+    this.setState({ newList: data });
+  };
+
+  cardDeleteHandler = () => {
+    const { id } = this.props.data;
+    const deleteHandler = this.props.deleteHandler;
+    deleteHandler(id);
   };
 
   render() {
-    const { title, list, toggle } = this.state;
-
-    console.log(this.state.list);
+    const { toggle, newList } = this.state;
+    const { title, id, list } = this.props.data;
+    const { allData, moveHandler } = this.props;
 
     return (
       <CardContents>
-        {title}
+        <TitleBox>
+          <Title>{title}</Title>
+          <ButtonBox>
+            <Button icon="close" onClick={this.cardDeleteHandler}></Button>
+          </ButtonBox>
+        </TitleBox>
 
-        {list.map((list: any) => {
-          return <Item key={list.id} deleteHandler={this.deleteHandler} item={list} />;
+        {(newList.length ? newList : list).map((item: any) => {
+          return (
+            <Item
+              key={item.id}
+              deleteHandler={this.deleteHandler}
+              moveHandler={moveHandler}
+              item={item}
+              cardId={id}
+              allData={allData}
+            />
+          );
         })}
 
         {toggle ? (
@@ -71,6 +92,20 @@ class Cards extends Component<CardsProps, CardsState> {
     );
   }
 }
+
+const TitleBox = styled.div`
+  display: flex;
+`;
+
+const Title = styled.div`
+  width: 100%;
+  margin: auto;
+`;
+
+const ButtonBox = styled.div`
+  width: 100%;
+  text-align: right;
+`;
 
 const Add = styled.div`
   width: 100%;

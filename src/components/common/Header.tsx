@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { Button, Row, Col } from "antd";
 import styled, { css } from "styled-components";
+import { withRouter, RouteComponentProps } from "react-router";
 
-interface Props {
-  color: string;
+interface Props extends RouteComponentProps {
+  color?: string;
 }
 
 interface State {}
 
-export default class Header extends Component<Props, State> {
+class Header extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {};
@@ -18,15 +19,16 @@ export default class Header extends Component<Props, State> {
     color: "#3560A8"
   };
 
+  homeClickHandler = () => {
+    this.props.history.push("/");
+  };
+
   render() {
     return (
       <Container color={this.props.color}>
         <Row type="flex">
           <Col span={1}>
-            <Button size="large" icon="home" />
-          </Col>
-          <Col span={4}>
-            <Button size="large" icon="search" />
+            <Button size="large" icon="home" onClick={this.homeClickHandler} />
           </Col>
           <Col span={4}>
             <Button size="large" icon="user" />
@@ -47,3 +49,5 @@ const Container = styled.div`
     `;
   }}
 `;
+
+export default withRouter(Header);
