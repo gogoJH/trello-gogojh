@@ -1,15 +1,26 @@
 import React, { Component } from "react";
 import { Button, Row, Col } from "antd";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-interface Props {}
+interface Props {
+  color: string;
+}
 
 interface State {}
 
 export default class Header extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {};
+  }
+
+  static defaultProps = {
+    color: "#3560A8"
+  };
+
   render() {
     return (
-      <Container>
+      <Container color={this.props.color}>
         <Row type="flex">
           <Col span={1}>
             <Button size="large" icon="home" />
@@ -27,8 +38,12 @@ export default class Header extends Component<Props, State> {
 }
 
 const Container = styled.div`
-  height: 50px;
-  width: 100%;
-  background-color: #3560a8;
-  padding: 5px;
+  ${props => {
+    return css`
+      height: 50px;
+      width: 100%;
+      background-color: ${props.color};
+      padding: 5px;
+    `;
+  }}
 `;

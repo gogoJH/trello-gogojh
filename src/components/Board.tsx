@@ -1,47 +1,46 @@
-import React, { Component } from "react";
+import React, { MouseEvent } from "react";
 import styled from "styled-components";
-//import Card from "./Card";
+import { green3, FColor } from "../Styles";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
-interface Props {}
-
-interface Card {
-  index: number;
+interface BoardProps extends RouteComponentProps {
+  data: Data;
 }
 
-interface State {
-  cards: Card[];
+interface Data {
+  id: number;
+  user_id: number;
+  title: string;
 }
 
-class Board extends Component<Props, State> {
-  state: State = {
-    cards: []
+const Board: React.FC<BoardProps> = ({ data, history }) => {
+  const _boardClick = (event: MouseEvent) => {
+    history.push("/board/" + data.id + "/" + data.title);
   };
 
-  componentDidMount() {}
+  return (
+    <BoardCT onClick={_boardClick}>
+      <BoardContents>{data.title}</BoardContents>
+    </BoardCT>
+  );
+};
 
-  render() {
-    const cards = this.state.cards;
-
-    return (
-      <Container>
-        {cards.map(item => (
-          <Card>{item.index}</Card>
-        ))}
-      </Container>
-    );
-  }
-}
-
-const Container = styled.div`
-  border: solid 5px red;
-  margin: 10px;
-  width: 100%;
-  height: 50vh;
-`;
-
-const Card = styled.div`
+const BoardCT = styled.div`
   width: 200px;
-  height: 200px;
+  height: 100px;
+  background-color: ${green3};
+  margin: 0 10px;
+  display: flex;
+  border-radius: 10px;
+  cursor: pointer;
 `;
 
-export default Board;
+const BoardContents = styled.div`
+  font-size: 20px;
+  text-align: center;
+  color: ${FColor};
+  font-weight: bold;
+  margin: auto;
+`;
+
+export default withRouter(Board);
