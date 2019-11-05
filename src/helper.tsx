@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = process.env.REACT_APP_BACKEND_Local;
+const URL = process.env.REACT_APP_BACKEND_HOST;
 
 export interface ServerData {
   id: number;
