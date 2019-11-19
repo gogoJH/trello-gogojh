@@ -1,28 +1,61 @@
-import React, { Component } from "react";
+import React, { Component, KeyboardEvent, ChangeEvent } from "react";
 import Header from "./common/Header";
 import Board from "./Board";
-import { ServerData, getData } from "../helper";
+import { ServerData, getData, getToken, addBoard, deleteBoard } from "../helper";
 import { Container, addColor } from "../Styles";
 import styled from "styled-components";
-import { Icon } from "antd";
+import { Icon, Input } from "antd";
 
 interface BoardsProps {}
 
 interface BoardsState {
   data: ServerData[];
+  token: boolean;
+  addToggle: boolean;
+  id: number;
 }
 
 export default class Boards extends Component<BoardsProps, BoardsState> {
   constructor(props: BoardsProps) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      token: false,
+      addToggle: false,
+      id: null
     };
   }
 
+  _deleteHandler = async (boardId: number) => {
+    await deleteBoard(boardId);
+    await this._getData();
+  };
+
+  _enterHandler = async (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
+    const title = e.target.value;
+    const { id } = this.state;
+    console.log(title, id);
+    await addBoard(title, id);
+    this.setState({ addToggle: !this.state.addToggle });
+    await this._getData();
+  };
+
+  _toggleHandler = () => {
+    this.setState({ addToggle: !this.state.addToggle });
+  };
+
+  _tokenToggle = async () => {
+    this.setState({ token: true });
+  };
+
   _getData = async () => {
-    const data = await getData("boards");
-    this.setState({ data });
+    const token = window.localStorage.getItem("token");
+
+    if (token) {
+      const { id } = getToken();
+      const data = await getData(id);
+      this.setState({ data, id });
+    }
   };
 
   componentDidMount() {
@@ -30,26 +63,42 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
   }
 
   render() {
-    const data = this.state.data;
-    const boards = data.map(data => <Board key={data.id} data={data}></Board>);
+    const { data, addToggle } = this.state;
+    const boards = data.map(data => (
+      <Board key={data.id} data={data} deleteHandler={this._deleteHandler}></Board>
+    ));
+    const token = window.localStorage.getItem("token");
 
     return (
       <Container>
-        <Header />
+        <Header tokenToggle={this._tokenToggle} />
         <TitleContainer>
           <Icon type="user" style={{ margin: "auto 10px", fontSize: "1.5rem" }} />
           <Title>Personal Boards</Title>
         </TitleContainer>
-        <ContentContainer>
-          {boards}
-          <Add>
-            <AddContents>Create new board</AddContents>
-          </Add>
-        </ContentContainer>
+        {token ? (
+          <ContentContainer>
+            {boards}
+            <Add onClick={this._toggleHandler}>
+              {addToggle ? (
+                <Input style={{ margin: "auto" }} autoFocus onPressEnter={this._enterHandler} />
+              ) : (
+                <AddContents>Create new board</AddContents>
+              )}
+            </Add>
+          </ContentContainer>
+        ) : (
+          <LoginContainer>Login please !</LoginContainer>
+        )}
       </Container>
     );
   }
 }
+const LoginContainer = styled.div`
+  margin: 50px;
+  font-size: 30pt;
+  font-weight: bold;
+`;
 
 const TitleContainer = styled.div`
   width: 100%;
@@ -77,6 +126,7 @@ const Add = styled.div`
   display: flex;
   border-radius: 10px;
   cursor: pointer;
+  margin-left: 10px;
 `;
 
 const AddContents = styled.div`

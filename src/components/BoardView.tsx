@@ -41,8 +41,8 @@ export default class BoardView extends Component<ViewProps, ViewState> {
     const title = e.target.value;
     const boardId = this.props.match.params.id;
     await addCard(boardId, title);
+    await this._getCards();
     this.setState({ toggle: true });
-    this._getCards();
   };
 
   toggleHandler = (e: MouseEvent) => {
@@ -53,7 +53,7 @@ export default class BoardView extends Component<ViewProps, ViewState> {
   deleteHandler = async (cardId: number) => {
     console.log("여기");
     await deleteCard(cardId);
-    this._getCards();
+    await this._getCards();
   };
 
   componentDidMount() {
@@ -81,13 +81,18 @@ export default class BoardView extends Component<ViewProps, ViewState> {
                 allData={data}
               />
             ))}
-            {toggle ? (
-              <Add onClick={this.toggleHandler}>
+
+            <Add onClick={this.toggleHandler}>
+              {toggle ? (
                 <AddContents>+ Add a card </AddContents>
-              </Add>
-            ) : (
-              <Input autoFocus onPressEnter={this.enterHandler}></Input>
-            )}
+              ) : (
+                <Input
+                  style={{ marginTop: "7px" }}
+                  autoFocus
+                  onPressEnter={this.enterHandler}
+                ></Input>
+              )}
+            </Add>
           </CardContainer>
         </Container>
       </div>

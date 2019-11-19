@@ -2,9 +2,11 @@ import React, { MouseEvent } from "react";
 import styled from "styled-components";
 import { green3, FColor } from "../Styles";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { Button } from "antd";
 
 interface BoardProps extends RouteComponentProps {
   data: Data;
+  deleteHandler: (boardId: number) => void;
 }
 
 interface Data {
@@ -13,14 +15,19 @@ interface Data {
   title: string;
 }
 
-const Board: React.FC<BoardProps> = ({ data, history }) => {
+const Board: React.FC<BoardProps> = ({ data, history, deleteHandler }) => {
   const _boardClick = (event: MouseEvent) => {
     history.push("/board/" + data.id + "/" + data.title);
   };
 
+  const _deleteClick = () => {
+    deleteHandler(data.id);
+  };
+
   return (
-    <BoardCT onClick={_boardClick}>
-      <BoardContents>{data.title}</BoardContents>
+    <BoardCT>
+      <BoardContents onClick={_boardClick}>{data.title}</BoardContents>
+      <Button onClick={_deleteClick}>X</Button>
     </BoardCT>
   );
 };
