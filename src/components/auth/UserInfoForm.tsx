@@ -33,6 +33,7 @@ class UserInfoForm extends Component<InfoProps, InfoState> {
     this.props.form.validateFieldsAndScroll((err: any, values: any) => {
       if (!err) {
         setUserData(values);
+        this.props.onClose();
       }
     });
   };

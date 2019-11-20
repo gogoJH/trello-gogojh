@@ -12,7 +12,6 @@ interface BoardsState {
   data: ServerData[];
   token: boolean;
   addToggle: boolean;
-  id: number;
 }
 
 export default class Boards extends Component<BoardsProps, BoardsState> {
@@ -21,8 +20,7 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
     this.state = {
       data: [],
       token: false,
-      addToggle: false,
-      id: null
+      addToggle: false
     };
   }
 
@@ -33,11 +31,11 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
 
   _enterHandler = async (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
-    const { id } = this.state;
-    console.log(title, id);
+    const { id } = getToken();
+
     await addBoard(title, id);
-    this.setState({ addToggle: !this.state.addToggle });
     await this._getData();
+    this.setState({ addToggle: !this.state.addToggle });
   };
 
   _toggleHandler = () => {
@@ -54,7 +52,7 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
     if (token) {
       const { id } = getToken();
       const data = await getData(id);
-      this.setState({ data, id });
+      this.setState({ data });
     }
   };
 
