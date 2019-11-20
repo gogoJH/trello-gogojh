@@ -1,6 +1,6 @@
 import React, { Component, MouseEvent, KeyboardEvent, ChangeEvent } from "react";
 import styled from "styled-components";
-import { CardData, addList, deleteList, getList } from "../helper";
+import { CardData, addList, deleteList } from "../helper";
 import { cardColor } from "../Styles";
 import Item from "./Item";
 import { Input, Button } from "antd";
@@ -10,18 +10,17 @@ interface CardsProps {
   allData: CardData[];
   moveHandler: Function;
   deleteHandler: Function;
+  getCards: () => void;
 }
 
 interface CardsState {
   toggle: boolean;
-  newList: [];
 }
 
 class Cards extends Component<CardsProps, CardsState> {
   constructor(props: CardsProps) {
     super(props);
     this.state = {
-      newList: [],
       toggle: true
     };
   }
@@ -35,17 +34,13 @@ class Cards extends Component<CardsProps, CardsState> {
     const id = this.props.data.id;
 
     await addList(title, id);
-    const { data } = await getList(id);
-
-    this.setState({ toggle: true, newList: data });
+    await this.props.getCards();
+    this.setState({ toggle: true });
   };
 
-  deleteHandler = async (id: number) => {
-    const cardId = this.props.data.id;
+  listDeleteHandler = async (id: number) => {
     await deleteList(id);
-    const { data } = await getList(cardId);
-
-    this.setState({ newList: data });
+    await this.props.getCards();
   };
 
   cardDeleteHandler = () => {
@@ -55,9 +50,11 @@ class Cards extends Component<CardsProps, CardsState> {
   };
 
   render() {
-    const { toggle, newList } = this.state;
-    const { title, id, list } = this.props.data;
-    const { allData, moveHandler } = this.props;
+    const { toggle } = this.state;
+    const { allData, moveHandler, data } = this.props;
+    const { title, list, id } = data;
+
+    console.log("data ", data, "alldata", allData);
 
     return (
       <CardContents>
@@ -68,11 +65,11 @@ class Cards extends Component<CardsProps, CardsState> {
           </ButtonBox>
         </TitleBox>
 
-        {(newList.length ? newList : list).map((item: any) => {
+        {data.list.map((item: any) => {
           return (
             <Item
               key={item.id}
-              deleteHandler={this.deleteHandler}
+              deleteHandler={this.listDeleteHandler}
               moveHandler={moveHandler}
               item={item}
               cardId={id}

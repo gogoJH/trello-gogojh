@@ -50,7 +50,6 @@ class Header extends Component<Props, State> {
 
   render() {
     const token = window.localStorage.getItem("token");
-    const { username } = getToken();
 
     return (
       <Container color={this.props.color}>
@@ -70,7 +69,7 @@ class Header extends Component<Props, State> {
                 style={{ marginRight: "10px" }}
                 onClick={this.infoHandler}
               ></Button>
-              {username}님 어서오세요!
+              {getToken().username}님 어서오세요!
             </NameBox>
           ) : (
             <Button size="large" icon="login" onClick={this.loginHandler}>

@@ -13,8 +13,6 @@ interface ItemProps {
 }
 
 interface ItemState {
-  id: number;
-  title: string;
   toggle: boolean;
   moveToggle: boolean;
 }
@@ -23,8 +21,6 @@ class Item extends Component<ItemProps, ItemState> {
   constructor(props: ItemProps) {
     super(props);
     this.state = {
-      id: this.props.item.id,
-      title: this.props.item.title,
       toggle: true,
       moveToggle: true
     };
@@ -38,23 +34,23 @@ class Item extends Component<ItemProps, ItemState> {
 
   keyDownHandler = (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      toggle: true,
-      title: e.target.value
+      toggle: true
     });
-    setList(this.props.item.id, this.state.title);
+    setList(this.props.item.id, e.target.value);
   };
 
   deleteHandler = () => {
     const deleteHandler = this.props.deleteHandler;
-    const { id } = this.state;
+    const { id } = this.props.item;
     deleteHandler(id);
   };
 
   moveHandler = (cardId: number) => {
     const moveHandler = this.props.moveHandler;
-    const { id, title } = this.state;
-    this.setState({ moveToggle: true });
+    const { id, title } = this.props.item;
     moveHandler(id, title, cardId);
+
+    this.setState({ moveToggle: true });
   };
 
   moveToggleHandler = () => {
@@ -63,9 +59,9 @@ class Item extends Component<ItemProps, ItemState> {
   };
 
   render() {
-    const { toggle, title } = this.state;
-    const moveToggle = this.state.moveToggle;
-    const { allData, cardId } = this.props;
+    const { moveToggle, toggle } = this.state;
+    const { allData, cardId, item } = this.props;
+    const { title } = item;
 
     return (
       <div>

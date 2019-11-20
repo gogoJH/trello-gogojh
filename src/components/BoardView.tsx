@@ -77,6 +77,7 @@ export default class BoardView extends Component<ViewProps, ViewState> {
                 key={card.id}
                 deleteHandler={this.deleteHandler}
                 moveHandler={this.moveHandler}
+                getCards={this._getCards}
                 data={card}
                 allData={data}
               />

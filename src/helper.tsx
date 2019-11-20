@@ -1,6 +1,5 @@
 import axios from "axios";
 import jwt from "jwt-decode";
-import { async } from "q";
 
 const URL = process.env.REACT_APP_BACKEND_HOST || process.env.REACT_APP_BACKEND_Local;
 
