@@ -48,6 +48,11 @@ class Header extends Component<Props, State> {
     this.setState({ signUpVisible: !this.state.signUpVisible });
   };
 
+  logoutHandler = () => {
+    window.localStorage.removeItem("token");
+    this.props.tokenToggle();
+  };
+
   render() {
     const token = window.localStorage.getItem("token");
 
@@ -70,6 +75,14 @@ class Header extends Component<Props, State> {
                 onClick={this.infoHandler}
               ></Button>
               {getToken().username}님 어서오세요!
+              <Button
+                size="large"
+                icon="logout"
+                style={{ marginLeft: "10px" }}
+                onClick={this.logoutHandler}
+              >
+                logout
+              </Button>
             </NameBox>
           ) : (
             <Button size="large" icon="login" onClick={this.loginHandler}>

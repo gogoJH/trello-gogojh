@@ -1,7 +1,7 @@
 import React, { Component, ChangeEvent, KeyboardEvent } from "react";
 import styled from "styled-components";
 import { Input, Button } from "antd";
-import { setList, CardData } from "../helper";
+import { CardData } from "../helper";
 import { green3 } from "../Styles";
 
 interface ItemProps {
@@ -9,6 +9,7 @@ interface ItemProps {
   allData: CardData[];
   deleteHandler: Function;
   moveHandler: Function;
+  setHandler: (id: number, value: string) => void;
   cardId: number;
 }
 
@@ -32,11 +33,17 @@ class Item extends Component<ItemProps, ItemState> {
     this.setState({ toggle });
   };
 
-  keyDownHandler = (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
+  setHandler = (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
+    console.log(2222);
+
+    const setHandler = this.props.setHandler;
+    const { id } = this.props.item;
+
+    setHandler(id, e.target.value);
+
     this.setState({
       toggle: true
     });
-    setList(this.props.item.id, e.target.value);
   };
 
   deleteHandler = () => {
@@ -93,7 +100,7 @@ class Item extends Component<ItemProps, ItemState> {
             autoFocus
             defaultValue={title}
             placeholder={title}
-            onPressEnter={this.keyDownHandler}
+            onPressEnter={this.setHandler}
           ></Input>
         )}
       </div>

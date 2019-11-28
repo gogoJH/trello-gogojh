@@ -6,7 +6,7 @@ import { login } from "../../helper";
 interface loginProps extends FormComponentProps {
   onClose: () => void;
   signUpHandler: () => void;
-  tokenToggle: () => void;
+  tokenToggle: (login: string) => void;
 }
 
 class LoginForm extends React.Component<loginProps> {
@@ -18,7 +18,7 @@ class LoginForm extends React.Component<loginProps> {
         const result = await login(values);
         if (result) {
           this.props.onClose();
-          this.props.tokenToggle();
+          this.props.tokenToggle("login");
         }
       }
     });

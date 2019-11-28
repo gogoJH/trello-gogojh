@@ -26,6 +26,8 @@ export default class BoardView extends Component<ViewProps, ViewState> {
   }
 
   _getCards = async () => {
+    console.log(444);
+
     const id = this.props.match.params.id;
     const data = await getCards(id);
     this.setState({ data });
@@ -62,7 +64,7 @@ export default class BoardView extends Component<ViewProps, ViewState> {
 
   render() {
     const title = this.props.match.params.title;
-    const { data, toggle } = this.state;
+    const { toggle } = this.state;
 
     return (
       <div>
@@ -72,14 +74,14 @@ export default class BoardView extends Component<ViewProps, ViewState> {
         <Container>
           <Title>{title}</Title>
           <CardContainer>
-            {data.map((card: CardData) => (
+            {this.state.data.map((card: CardData) => (
               <Cards
                 key={card.id}
                 deleteHandler={this.deleteHandler}
                 moveHandler={this.moveHandler}
                 getCards={this._getCards}
                 data={card}
-                allData={data}
+                allData={this.state.data}
               />
             ))}
 

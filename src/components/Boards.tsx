@@ -42,8 +42,11 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
     this.setState({ addToggle: !this.state.addToggle });
   };
 
-  _tokenToggle = async () => {
+  _tokenToggle = async (login?: string) => {
     this.setState({ token: true });
+    if (login === "login") {
+      this._getData();
+    }
   };
 
   _getData = async () => {
@@ -63,7 +66,12 @@ export default class Boards extends Component<BoardsProps, BoardsState> {
   render() {
     const { data, addToggle } = this.state;
     const boards = data.map(data => (
-      <Board key={data.id} data={data} deleteHandler={this._deleteHandler}></Board>
+      <Board
+        key={data.id}
+        data={data}
+        getData={this._getData}
+        deleteHandler={this._deleteHandler}
+      ></Board>
     ));
     const token = window.localStorage.getItem("token");
 

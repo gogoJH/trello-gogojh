@@ -1,6 +1,6 @@
 import React, { Component, MouseEvent, KeyboardEvent, ChangeEvent } from "react";
 import styled from "styled-components";
-import { CardData, addList, deleteList } from "../helper";
+import { CardData, addList, deleteList, setList } from "../helper";
 import { cardColor } from "../Styles";
 import Item from "./Item";
 import { Input, Button } from "antd";
@@ -29,6 +29,13 @@ class Cards extends Component<CardsProps, CardsState> {
     this.setState({ toggle: !this.state.toggle });
   };
 
+  setHandler = async (id: number, value: string) => {
+    console.log(333);
+    await setList(id, value);
+    console.log(444);
+    await this.props.getCards();
+  };
+
   enterHandler = async (e: KeyboardEvent & ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
     const id = this.props.data.id;
@@ -46,6 +53,7 @@ class Cards extends Component<CardsProps, CardsState> {
   cardDeleteHandler = () => {
     const { id } = this.props.data;
     const deleteHandler = this.props.deleteHandler;
+
     deleteHandler(id);
   };
 
@@ -71,6 +79,7 @@ class Cards extends Component<CardsProps, CardsState> {
               key={item.id}
               deleteHandler={this.listDeleteHandler}
               moveHandler={moveHandler}
+              setHandler={this.setHandler}
               item={item}
               cardId={id}
               allData={allData}
