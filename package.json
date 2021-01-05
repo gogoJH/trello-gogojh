@@ -12,7 +12,7 @@
     "@types/react-router-dom": "^5.1.2",
     "@types/styled-components": "^4.1.19",
     "antd": "^3.24.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "babel-plugin-import": "^1.12.2",
     "customize-cra": "^0.8.0",
     "jwt-decode": "^2.2.0",
